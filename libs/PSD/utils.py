@@ -1,36 +1,108 @@
 import numpy as np
-import numpy.typing as npt
+from numpy.typing import ArrayLike
 
-def power(x: npt.NDArray[np.number]) -> float:
-    '''power(x: npt.NDArray[np.number]) -> float:
-        Returns the power of the signal x, defined as the mean of the square of the Voltage signal. 
-    '''
-    return np.mean(np.mean(x)**2)
+def power(xx : ArrayLike, *, axis : int = -1) -> float:
+    """
+    Compute the average power of a signal.
 
-def snr(signal: npt.NDArray[np.number], noise: npt.NDArray[np.number]) -> float:
-    return 10 * np.log10(np.mean(signal**2) / np.mean(noise**2))
+    The signal power is defined as the mean squared value of the samples.
 
-def autocorrelate(xx: npt.NDArray[np.number]) -> npt.NDArray[np.number]:
-    nn = xx.shape[0]
+    Parameters
+    ----------
+    xx : ArrayLike
+        Input signal.
+    axis : int, default=-1
+        Axis along which the autocorrelation is computed.
+    Returns
+    -------
+    float
+        Average signal power.
+    """
+    return np.mean(np.abs(xx)**2, axis=axis)
 
-    autocorr = np.correlate(xx, xx, mode='full')/nn         # Normalizated to size. Gives the true values of the autocorrelation
-    autocorr = autocorr[autocorr.size//2:]                  # Only keep non negative values
-    autocorr = autocorr.reshape(-1,1)                   	# Reshape to column vector (standard of PDS)
-    return autocorr
+def snr(signal: ArrayLike, noise: ArrayLike, *, axis : int = -1) -> float:
+    """
+    Compute the signal-to-noise ratio (SNR).
 
-def mod_db(xx: npt.NDArray[np.number]) -> npt.NDArray[np.number]:
+    Parameters
+    ----------
+    signal : ArrayLike
+        Signal component.
+    noise : ArrayLike
+        Noise component.
+    axis : int, default=-1
+        Axis along which the autocorrelation is computed.
+
+    Returns
+    -------
+    float
+        Signal-to-noise ratio in decibels (dB).
+    """
+    return 10 * np.log10(power(signal, axis=axis) / power(noise, axis=axis))
+
+def voltage_db(xx: ArrayLike) -> np.ndarray:
+    """
+    Compute the magnitude of a quantity in decibels.
+
+    The conversion is defined as
+        20 log10(|x|)
+
+    and is typically used for amplitudes or voltage ratios.
+
+    Parameters
+    ----------
+    xx : ArrayLike
+        Input values.
+
+    Returns
+    -------
+    ndarray
+        Magnitude expressed in decibels.
+    """
     return 20*np.log10(np.abs(xx))
 
-def mod_dbw(xx: npt.NDArray[np.number]) -> npt.NDArray[np.number]:
+def power_db(xx: ArrayLike) -> np.ndarray:
+    """
+    Compute the power of a quantity in decibels.
+
+    The conversion is defined as
+        10 log10(|x|)
+
+    and is typically used for power ratios.
+
+    Parameters
+    ----------
+    xx : ArrayLike
+        Input values.
+
+    Returns
+    -------
+    ndarray
+        Power expressed in decibels.
+    """
     return 10*np.log10(np.abs(xx))
 
-def quantizer(xx: npt.NDArray[np.number], Vfs: float, bits: int = 4) -> npt.NDArray[np.number]:
-    '''quantizer
-    Quantizes the signal xx like an ADC with Vfs and bits.
-    xx: Signal to be quantized.
-    Vfs: Voltage full scale. ADC: [0, Vfs]
-    bits: Number of bits of the ADC.
-    ''' 
+def quantizer(xx: ArrayLike, Vfs: float, bits: int = 4) -> np.ndarray:
+    """
+    Quantize a signal using a uniform ADC model.
+
+    Samples are rounded to the nearest quantization level and clipped to
+    the converter input range.
+
+    Parameters
+    ----------
+    xx : ArrayLike
+        Input signal.
+    Vfs : float
+        Full-scale input voltage.
+    bits : int, default=4
+        ADC resolution in bits.
+
+    Returns
+    -------
+    ndarray
+        Quantized signal.
+    """    
     q = Vfs/(2**bits) 
     xq = np.round(xx/q) * q
 
