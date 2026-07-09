@@ -13,7 +13,7 @@ WindowType = Literal[
     "blackman-harris",
 ]
 
-WINDOWS: dict[str, Callable[[int], npt.NDArray[np.number]]] = {
+WINDOWS: dict[WindowType, Callable[[int], npt.NDArray[np.number]]] = {
     "rectangular": lambda nn: np.ones(nn),
     "flattop": lambda nn: signal.windows.flattop(nn),
     "hann": lambda nn: signal.windows.hann(nn),
