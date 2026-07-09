@@ -1,15 +1,16 @@
 import numpy as np
+import numpy.typing as npt
 
-def power(x: np.ndarray) -> float:
-    '''power(x: np.ndarray) -> float:
+def power(x: npt.NDArray[np.number]) -> float:
+    '''power(x: npt.NDArray[np.number]) -> float:
         Returns the power of the signal x, defined as the mean of the square of the Voltage signal. 
     '''
     return np.mean(np.mean(x)**2)
 
-def snr(signal: np.ndarray, noise: np.ndarray) -> float:
+def snr(signal: npt.NDArray[np.number], noise: npt.NDArray[np.number]) -> float:
     return 10 * np.log10(np.mean(signal**2) / np.mean(noise**2))
 
-def autocorrelate(xx: np.ndarray) -> np.ndarray:
+def autocorrelate(xx: npt.NDArray[np.number]) -> npt.NDArray[np.number]:
     nn = xx.shape[0]
 
     autocorr = np.correlate(xx, xx, mode='full')/nn         # Normalizated to size. Gives the true values of the autocorrelation
@@ -17,17 +18,17 @@ def autocorrelate(xx: np.ndarray) -> np.ndarray:
     autocorr = autocorr.reshape(-1,1)                   	# Reshape to column vector (standard of PDS)
     return autocorr
 
-def mod_db(xx: np.ndarray) -> np.ndarray:
+def mod_db(xx: npt.NDArray[np.number]) -> npt.NDArray[np.number]:
     return 20*np.log10(np.abs(xx))
 
-def mod_dbw(xx: np.ndarray) -> np.ndarray:
+def mod_dbw(xx: npt.NDArray[np.number]) -> npt.NDArray[np.number]:
     return 10*np.log10(np.abs(xx))
 
-def quantizer(xx: np.ndarray, Vfs: float, bits: int = 4) -> np.ndarray:
+def quantizer(xx: npt.NDArray[np.number], Vfs: float, bits: int = 4) -> npt.NDArray[np.number]:
     '''quantizer
     Quantizes the signal xx like an ADC with Vfs and bits.
     xx: Signal to be quantized.
-    Vfs: ADC [0, Vfs]
+    Vfs: Voltage full scale. ADC: [0, Vfs]
     bits: Number of bits of the ADC.
     ''' 
     q = Vfs/(2**bits) 

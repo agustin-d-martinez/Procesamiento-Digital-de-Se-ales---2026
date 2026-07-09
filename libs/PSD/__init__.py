@@ -1,3 +1,3 @@
-from . import fft, signals, utils
+from . import fft, signals, utils, plot, digital_filters
 
-__all__ = ['fft', 'signals', 'utils']
+__all__ = ['fft', 'signals', 'utils', 'plot', 'digital_filters']

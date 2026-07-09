@@ -1,6 +1,7 @@
 import numpy as np
+import numpy.typing as npt
 
-def sen(vmax = 1, dc = 0, ff = 1, ph = 0, nn = 100, fs = 1000 ) -> tuple[np.ndarray,np.ndarray]:
+def sen(vmax = 1, dc = 0, ff = 1, ph = 0, nn = 100, fs = 1000 ) -> tuple[npt.NDArray[np.number], npt.NDArray[np.number]]:
     '''Generate a sine wave.
         Args:
             vmax: Peak amplitude.
@@ -22,7 +23,7 @@ def sen(vmax = 1, dc = 0, ff = 1, ph = 0, nn = 100, fs = 1000 ) -> tuple[np.ndar
 
     return xx, tt
 
-def square(vmax = 1, dc = 0, ff = 1, duty = .5, nn = 100, fs = 1000 ) -> tuple[np.ndarray,np.ndarray] :
+def square(vmax = 1, dc = 0, ff = 1, duty = .5, nn = 100, fs = 1000 ) -> tuple[npt.NDArray[np.number], npt.NDArray[np.number]] :
     '''Generates a square wave signal with the given parameters.
         Args:
             vmax: maximum value of the signal. The minimum value will be -vmax. vpp is 2*vmax.
@@ -47,7 +48,7 @@ def square(vmax = 1, dc = 0, ff = 1, duty = .5, nn = 100, fs = 1000 ) -> tuple[n
 
     return xx, tt
 
-def sawtooth(vmax = 1, dc = 0, ff = 1, nn = 1, fs = 1000) -> tuple[np.ndarray,np.ndarray]:
+def sawtooth(vmax = 1, dc = 0, ff = 1, nn = 1, fs = 1000) -> tuple[npt.NDArray[np.number], npt.NDArray[np.number]]:
     '''Generates a sawtooth wave signal with the given parameters.
         Args:
             vmax: maximum value of the signal. The minimum value will be -vmax. vpp is 2*vmax.
@@ -71,7 +72,7 @@ def sawtooth(vmax = 1, dc = 0, ff = 1, nn = 1, fs = 1000) -> tuple[np.ndarray,np
 
     return xx, tt
 
-def triangle(vmax = 1, dc = 0, ff = 1, duty = 0.5, nn = 1, fs = 1000) -> tuple[np.ndarray,np.ndarray]:
+def triangle(vmax = 1, dc = 0, ff = 1, duty = 0.5, nn = 1, fs = 1000) -> tuple[npt.NDArray[np.number], npt.NDArray[np.number]]:
     '''Generates a triangle wave signal with the given parameters.
         Args:
             vmax: maximum value of the signal. The minimum value will be -vmax. vpp is 2*vmax.
@@ -95,7 +96,7 @@ def triangle(vmax = 1, dc = 0, ff = 1, duty = 0.5, nn = 1, fs = 1000) -> tuple[n
 
     return xx, tt
 
-def noise_generator(var = 1, nn = 100, fs = 1000) -> tuple[np.ndarray,np.ndarray]:
+def noise_generator(var = 1, nn = 100, fs = 1000) -> tuple[npt.NDArray[np.number], npt.NDArray[np.number]]:
     '''Generates Gaussian noise, with variance var and zero mean.
         Args:
             var: variance of the noise.
@@ -115,7 +116,7 @@ def noise_generator(var = 1, nn = 100, fs = 1000) -> tuple[np.ndarray,np.ndarray
 
     return xx, tt
 
-def noisy_sen(vmax = 1, dc = 0, ff = 1, ph = 0, nn = 100, fs = 1000, snr = 20) -> tuple[np.ndarray,np.ndarray]:
+def noisy_sen(vmax = 1, dc = 0, ff = 1, ph = 0, nn = 100, fs = 1000, snr = 20) -> tuple[npt.NDArray[np.number], npt.NDArray[np.number]]:
     '''Generates a noisy sine wave signal with the given parameters.
         Args:
             vmax: maximum value of the signal. The minimum value will be -vmax. vpp is 2*vmax.
@@ -137,3 +138,12 @@ def noisy_sen(vmax = 1, dc = 0, ff = 1, ph = 0, nn = 100, fs = 1000, snr = 20) -
     xx = xx + noise
 
     return xx, tt
+
+def kroneker_delta(n : int) -> npt.NDArray[np.number]:
+    """
+    Función delta de Kronecker.
+    """
+    delta = np.zeros(n)
+    delta[0] = 1
+
+    return delta

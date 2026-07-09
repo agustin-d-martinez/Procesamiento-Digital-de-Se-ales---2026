@@ -2,6 +2,7 @@ import numpy as np
 import scipy.signal as signal
 
 from typing import Callable, Literal
+import numpy.typing as npt
 
 WindowType = Literal[
     "rectangular",
@@ -12,7 +13,7 @@ WindowType = Literal[
     "blackman-harris",
 ]
 
-WINDOWS: dict[str, Callable[[int], np.ndarray]] = {
+WINDOWS: dict[str, Callable[[int], npt.NDArray[np.number]]] = {
     "rectangular": lambda nn: np.ones(nn),
     "flattop": lambda nn: signal.windows.flattop(nn),
     "hann": lambda nn: signal.windows.hann(nn),
@@ -21,8 +22,7 @@ WINDOWS: dict[str, Callable[[int], np.ndarray]] = {
     "blackman-harris": lambda nn: signal.windows.blackmanharris(nn)
 }
 
-signal.windows.blackmanharris
-def fft(xx: np.ndarray, n=None, window: WindowType | None = None) -> np.ndarray:
+def fft(xx: npt.NDArray[np.number], n=None, window: WindowType | None = None) -> npt.NDArray[np.number]:
     '''Returns the fft of the signal xx, normalized by the length of the signal. This is equivalent to np.fft.fft, but it also normalizes the fft by the length of the signal, so that the values are correct.
         Args:
             xx: signal to be transformed.
@@ -41,7 +41,7 @@ def fft(xx: np.ndarray, n=None, window: WindowType | None = None) -> np.ndarray:
 
     return np.fft.fft(xx, n=n, axis=0)/xx.shape[0]
 
-def freq_axis(xx: np.ndarray | int, fs: float) -> np.ndarray:
+def freq_axis(xx: npt.NDArray[np.number] | int, fs: float) -> npt.NDArray[np.number]:
     '''Equal to np.fft.fftfreq. It generates the correct freq axis for the fft algorithm.
         Axis has the form:
         [0, △f, 2△f, ..., fs/2, -fs/2, -(fs/2-△f), ..., -△f]
@@ -51,7 +51,7 @@ def freq_axis(xx: np.ndarray | int, fs: float) -> np.ndarray:
             xx: Number of points or signal to generate the axis for. Only the length is used.
             fs: sampling frequency
     '''
-    if type(xx) == int:
+    if isinstance(xx, int):
         nn = xx
     else:
         nn = xx.shape[0]
@@ -60,7 +60,7 @@ def freq_axis(xx: np.ndarray | int, fs: float) -> np.ndarray:
     ff = ff[:nn]
     return ff.reshape(-1,1)
 
-def fft_shift(xx: np.ndarray) -> np.ndarray:
+def fft_shift(xx: npt.NDArray[np.number]) -> npt.NDArray[np.number]:
     '''Shifts the fft of the signal xx, so that the zero frequency component is in the center of the spectrum. This is equivalent to np.fft.fftshift, but it also normalizes the fft by the length of the signal, so that the values are correct.
     '''
     N = xx.shape[0]
